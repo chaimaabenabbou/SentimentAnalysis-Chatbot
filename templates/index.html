@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Chatbot</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <link rel="stylesheet" href="{{ url_for('static', filename='styles/style.css') }}">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+
+<body>
+  <section class="msger">
+    <header class="msger-header">
+        <i class="fas fa-bug"></i> Chaimaa Chatbot <i class="fas fa-bug"></i>
+    </header>
+
+
+    <main class="msger-chat">
+      <div class="msg left-msg">
+       
+        <div class="msg-bubble">
+          <div class="msg-info">
+              <div class="msg-info-name">ChatBot</div>
+          </div>
+
+          <div class="msg-text" type="text" > Welcome! I am here to analyse your sentiment. Let's start! </div></div></div>
+
+    </main>
+
+     <form class="msger-inputarea">
+      <input type="text" class="msger-input" id="textInput" placeholder="Enter your message...">
+      <button type="submit" class="msger-send-btn" id ="send-button">Send</button>
+    </form>
+  </section>
+  <script src='https://use.fontawesome.com/releases/v5.0.13/js/all.js'></script>
+  <script>
+    
+    //right side for user and left one for the robot
+    function appendMessage(name,  side, text) {
+	    // Add the message written in the bot box
+	    const msg = `
+		<div class="msg ${side}-msg">
+		  <div class="msg-bubble">
+		    <div class="msg-info">
+		      <div class="msg-info-name">${name}</div>
+		    </div>
+		    <div class="msg-text">${text}</div>
+		  </div>
+		</div>
+		`;
+	     // insert after the latest msg sent
+	     msgerChat.insertAdjacentHTML("beforeend", msg);
+     }
+
+    function response(rawText) {
+	      //Response
+	      $.get("/get", { msg: rawText }).done(function (data) {
+		console.log(rawText);
+		console.log(data);
+		appendMessage("Robot",  "left", data);
+
+	      });
+
+    }
+
+    let msgerForm = document.querySelector(".msger-inputarea");
+    let msgerChat = document.querySelector(".msger-chat");
+
+     msgerForm.addEventListener("submit", event => {
+	      event.preventDefault();
+
+	      const msgText =   $("#textInput").val();
+	      appendMessage("You", "right", msgText);      
+	      response(msgText);
+		
+	      // reintialise textinput to ""
+	      $("#textInput").val("");
+		
+    });
+
+  </script>
+
+</body>
+
+</html>
